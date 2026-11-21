@@ -1,0 +1,146 @@
+
+version: '3.9'
+
+services:
+
+  web:
+    image: nginx:latest
+    container_name: apartment_web
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - apartment-network
+
+  db:
+    image: postgres:15
+    container_name: apartment_db
+    environment:
+      POSTGRES_DB: apartment
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - apartment-network
+
+networks:
+  apartment-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+
+
+docker --version
+docker compose version
+mkdir compose-lab
+cd compose-lab
+notepad docker-compose.yml
+docker compose up -d
+docker compose ps
+docker ps
+docker exec -it apartment_db psql -U admin -d apartment
+docker compose down
+docker compose up -d --build
+docker compose down -v
+
+docker pull jasonrivers/nagios:latest
+docker run -d --name nagios4 -p 8082:80 jasonrivers/nagios:latest
+docker ps
+docker logs nagios4
+docker stats nagios4
+docker exec nagios4 uptime
+docker exec nagios4 df -h
+docker exec nagios4 free -h
+docker stop nagios4
+docker start nagios4
+docker rm -f nagios4
+
+minikube start --driver=docker
+minikube status
+kubectl get nodes
+kubectl create deployment apartment-app --image=nginx
+kubectl get deployments
+kubectl scale deployment apartment-app --replicas=4
+kubectl get pods
+kubectl expose deployment apartment-app --type=NodePort --port=80
+kubectl get services
+minikube service apartment-app
+kubectl describe pod POD_NAME
+kubectl logs POD_NAME
+kubectl delete pod POD_NAME
+kubectl port-forward service/apartment-app 8085:80
+kubectl get all
+
+
+mkdir JenkinsLab
+cd JenkinsLab
+
+git clone https://github.com/sarasrija/ApartmentSystem.git
+
+cd ApartmentSystem
+
+mvn clean
+
+mvn compile
+
+mvn test
+
+mvn package
+ dir target
+startup.bat
+copy target\*.war C:\apache-tomcat-9\webapps\
+ngrok http 8080
+git add .
+
+git commit -m "Testing Jenkins webhook"
+
+git push origin main
+Get-Service jenkins
+
+Start-Service jenkins
+
+Restart-Service jenkins
+
+Stop-Service jenkins
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/sarasrija/ApartmentSystem.git'
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                bat 'mvn clean compile'
+            }
+        }
+
+        stage('Unit Testing') {
+            steps {
+                bat 'mvn test'
+            }
+        }
+
+        stage('Build WAR') {
+            steps {
+                bat 'mvn package'
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                echo 'Deploying application to Tomcat'
+                bat 'copy /Y target\\*.war "C:\\apache-tomcat-9\\webapps\\"'
+            }
+        }
+    }
+}
+
